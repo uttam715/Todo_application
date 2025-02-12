@@ -9,6 +9,11 @@ export default function TodoCreateModal({ addTodoItem }) {
 
   useEffect(() => {
     addTodoItem(todo);
+    setName("");
+    setDescription("");
+    setDueDate("");
+    setReminder("");
+
   }, [todo]);
 
   function handleCancelClick() {

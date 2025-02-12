@@ -17,12 +17,10 @@ function App() {
     if (!todo.name) return;
     const id = generateUUID();
     setTodoList([...todoList, { ...todo, id, status: false }]);
-    console.log(todoList, "added todos.....");
   }
 
   function selectedTab(text){
     setTab(text);
-    console.log(tab);
   }
 
   return (
