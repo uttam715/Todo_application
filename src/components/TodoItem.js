@@ -1,5 +1,6 @@
-export default function TodoItem(){
+export default function TodoItem({task}){
+    // console.log(item)
     return(
-        <div>item</div>
+        <div>{task.name}</div>
     )
 }
