@@ -13,7 +13,6 @@ export default function TodoCreateModal({ addTodoItem }) {
     setDescription("");
     setDueDate("");
     setReminder("");
-
   }, [todo]);
 
   function handleCancelClick() {
