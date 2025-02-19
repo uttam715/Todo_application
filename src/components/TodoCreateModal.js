@@ -17,6 +17,7 @@ export default function TodoCreateModal({ addTodoItem }) {
 
   function handleCancelClick() {
     document.getElementById("createTodoModal").style.display = "none";
+    setTodo("");
   }
 
   function handleAddTodoClick() {
