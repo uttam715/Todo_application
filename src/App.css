@@ -14,7 +14,20 @@
     width: 50%;
 }
 
-.todoIList{
+/* .todoIList{
     height: 300px;
     overflow: auto;
-}
+} */
+
+/* // Mixin to generate padding classes from .p-1 to .p-100 */
+/* // @mixin generatePaddingClasses {
+//   // Loop through 1 to 100
+//   @for $i from 1 through 100 {
+//     .p-#{$i} {
+//       padding: #{$i * 4}px;
+//     }
+//   }
+// }
+
+// @include generatePaddingClasses; */
+/*  */
