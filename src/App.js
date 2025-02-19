@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import TodoBar from "./components/TodoBar.js";
 import TodoCreateModal from "./components/TodoCreateModal";
 import { generateUUID } from "./utils/commonMethod.js";
 import TodoItem from "./components/TodoItem.js";
 import "./App.css";
+import DeleteModal from "./components/DeleteModal.js"
+// export const todoContext= createContext("");
 
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [tab, setTab] = useState("All");
   const [updatedList, setUpdatedList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [item, setItem] = useState("");
 
   useEffect(() => {
     setUpdatedList([...todoList]);
@@ -34,10 +37,11 @@ function App() {
     document.getElementById("createTodoModal").style.display = "block";
   }
 
+
   function addTodo(todo) {
     if (!todo.name) return;
     const id = generateUUID();
-    setTodoList([...todoList, { ...todo, id, status: true }]);
+    setTodoList([...todoList, { ...todo, id, status: false }]);
   }
 
   function selectedTab(text) {
@@ -55,10 +59,15 @@ function App() {
   }
 
   function handleDeleteClick(task) {
+    // console.log(task)
     const deletedTodo = todoList.findIndex((item) => task.id === item.id);
     const updatedList = [...todoList];
     updatedList.splice(deletedTodo, 1);
     setTodoList(updatedList);
+  }
+
+  function handleDeleteTodo(task){
+    setItem({...task});
   }
 
   return (
@@ -82,15 +91,23 @@ function App() {
       <div id="createTodoModal" className="hidden">
         <TodoCreateModal addTodoItem={addTodo} />
       </div>
+
+      <div id="deleteTodoModal" className="hidden">
+          <DeleteModal handleDeleteClick={handleDeleteClick} task={item} />
+        </div>
+
+
       <div className="max-h-[460px] min-h-[450px] overflow-auto">
         {updatedList.length ? (
           <div className="todoIList">
             {updatedList.map((item) => (
-              <TodoItem
-                task={item}
-                key={item.id}
-                handleDeleteClick={handleDeleteClick}
-              ></TodoItem>
+              
+                <TodoItem
+                  key={item.id}
+                  task={item}
+                  handleDeleteTodo={handleDeleteTodo}
+                ></TodoItem>
+             
             ))}
           </div>
         ) : (
@@ -126,3 +143,4 @@ function App() {
 }
 
 export default App;
+
