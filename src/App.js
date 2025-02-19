@@ -1,10 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TodoBar from "./components/TodoBar.js";
 import TodoCreateModal from "./components/TodoCreateModal";
 import { generateUUID } from "./utils/commonMethod.js";
 import TodoItem from "./components/TodoItem.js";
 import "./App.css";
-import DeleteModal from "./components/DeleteModal.js"
+import DeleteModal from "./components/DeleteModal.js";
+import EditModel from "./components/EditModel.js";
+
 // export const todoContext= createContext("");
 
 function App() {
@@ -13,6 +15,7 @@ function App() {
   const [updatedList, setUpdatedList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [item, setItem] = useState("");
+  // const [noSearchResult, setNoSearchResult] = useState(false);
 
   useEffect(() => {
     setUpdatedList([...todoList]);
@@ -30,18 +33,22 @@ function App() {
     const filteredTodos = todoList.filter((todo) =>
       todo.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setUpdatedList(filteredTodos);
+    // if (!filteredTodos.length) {
+    //   setNoSearchResult(true);
+    // } else {
+      setUpdatedList(filteredTodos);
+    // }
   }
 
   function handleAddClick() {
     document.getElementById("createTodoModal").style.display = "block";
   }
 
-
   function addTodo(todo) {
     if (!todo.name) return;
     const id = generateUUID();
     setTodoList([...todoList, { ...todo, id, status: false }]);
+    setSearchTerm("");
   }
 
   function selectedTab(text) {
@@ -56,6 +63,7 @@ function App() {
     } else {
       setUpdatedList([...todoList]);
     }
+    setSearchTerm("");
   }
 
   function handleDeleteClick(task) {
@@ -66,8 +74,28 @@ function App() {
     setTodoList(updatedList);
   }
 
-  function handleDeleteTodo(task){
-    setItem({...task});
+  function handleDeleteTodo(task) {
+    setItem({ ...task });
+  }
+
+  function handleEditTodo(task, name) {
+    console.log(name);
+  }
+
+  function handlMarkInCompleteTodo(task) {
+    const updatedList = todoList.map((item) => {
+      if (task.id === item.id) {
+        let todo = {};
+        if (task.status === true) {
+          todo = { ...item, status: false };
+        } else {
+          todo = { ...item, status: true };
+        }
+        return todo;
+      }
+      return item;
+    });
+    setTodoList(updatedList);
   }
 
   return (
@@ -93,21 +121,20 @@ function App() {
       </div>
 
       <div id="deleteTodoModal" className="hidden">
-          <DeleteModal handleDeleteClick={handleDeleteClick} task={item} />
-        </div>
-
+        <DeleteModal handleDeleteClick={handleDeleteClick} task={item} />
+      </div>
 
       <div className="max-h-[460px] min-h-[450px] overflow-auto">
         {updatedList.length ? (
           <div className="todoIList">
             {updatedList.map((item) => (
-              
-                <TodoItem
-                  key={item.id}
-                  task={item}
-                  handleDeleteTodo={handleDeleteTodo}
-                ></TodoItem>
-             
+              <TodoItem
+                key={item.id}
+                task={item}
+                handleDeleteTodo={handleDeleteTodo}
+                handleEditTodo={handleEditTodo}
+                handlMarkInCompleteTodo={handlMarkInCompleteTodo}
+              ></TodoItem>
             ))}
           </div>
         ) : (
@@ -143,4 +170,3 @@ function App() {
 }
 
 export default App;
-
