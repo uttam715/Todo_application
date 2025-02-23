@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import EditModel from "./EditModel.js";
 import { searchClassName } from "../utils/commonMethod.js";
 
 export default function TodoItem({
@@ -25,8 +24,7 @@ export default function TodoItem({
   }
 
   function handleEdit() {
-    console.log("testing....2");
-    setEdit((val) => !val);
+    setEdit(true);
   }
 
   function handlMarkInComplete() {

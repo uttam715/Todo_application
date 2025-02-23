@@ -1,29 +1,17 @@
-import { useEffect, useState } from "react";
-
-export default function TodoCreateModal({ addTodoItem }) {
-  const [todo, setTodo] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [reminder, setReminder] = useState("");
-
-  useEffect(() => {
-    addTodoItem(todo);
-    setName("");
-    setDescription("");
-    setDueDate("");
-    setReminder("");
-  }, [todo]);
-
-  function handleCancelClick() {
-    document.getElementById("createTodoModal").style.display = "none";
-    setTodo("");
-  }
-
-  function handleAddTodoClick() {
-    setTodo({ name, description, dueDate, reminder });
-    if (name) document.getElementById("createTodoModal").style.display = "none";
-  }
+export default function TodoCreateModal({
+  name,
+  description,
+  reminder,
+  dueDate,
+  handleName,
+  handleDescription,
+  handleDueDate,
+  handelReminder,
+  handleAddTodoClick,
+  handleCancelClick,
+  option,
+  todo,
+}) {
   return (
     <div className="backdrop-blur-[1px] bg-black/30 cmp-t-modal__overlay fixed flex inset-0 overflow-auto p-4 z-20">
       <div className="bg-white m-auto max-w-lg px-12 py-8 rounded-md shadow-lg w-1/2">
@@ -37,7 +25,7 @@ export default function TodoCreateModal({ addTodoItem }) {
             className="border border-slate-300 mb-6 p-2 rounded-sm w-full"
             placeholder="What's on your mind..."
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => handleName(e.target.value)}
           ></input>
           <label className="font-bold mb-0.5 text-sm" htmlFor="todo-decription">
             Description
@@ -47,7 +35,7 @@ export default function TodoCreateModal({ addTodoItem }) {
             className="border border-slate-300 mb-6 p-2 rounded-sm w-full h-40 max-h-40"
             placeholder="Add Description..."
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => handleDescription(e.target.value)}
           ></textarea>
           <label className="font-bold mb-0.5 text-sm" htmlFor="todo-due-date">
             Due Date
@@ -57,7 +45,7 @@ export default function TodoCreateModal({ addTodoItem }) {
             name="todo-due-date"
             className="border border-slate-300 mb-6 p-2 rounded-sm w-full"
             value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
+            onChange={(e) => handleDueDate(e.target.value)}
           ></input>
           <label className="font-bold mb-0.5 text-sm" htmlFor="todo-reminder">
             Reminder
@@ -66,7 +54,7 @@ export default function TodoCreateModal({ addTodoItem }) {
             name="todo-reminder"
             className="border border-slate-300 mb-6 p-2 rounded-sm w-full"
             value={reminder}
-            onChange={(e) => setReminder(e.target.value)}
+            onChange={(e) => handelReminder(e.target.value)}
           >
             <option disabled="disabled" value="" defaultValue>
               Please select one
@@ -80,7 +68,7 @@ export default function TodoCreateModal({ addTodoItem }) {
           </select>
           <button
             className="bg-sky-300 font-bold px-5 rounded-sm py-3 text-t mb-2"
-            onClick={handleAddTodoClick}
+            onClick={() => handleAddTodoClick(option, todo)}
           >
             Add Todo
           </button>
