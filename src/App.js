@@ -1,24 +1,39 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import TodoBar from "./components/TodoBar.js";
 import TodoCreateModal from "./components/TodoCreateModal";
 import { generateUUID } from "./utils/commonMethod.js";
 import TodoItem from "./components/TodoItem.js";
 import "./App.css";
 import DeleteModal from "./components/DeleteModal.js";
-import EditModel from "./components/EditModel.js";
-
-// export const todoContext= createContext("");
 
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [tab, setTab] = useState("All");
   const [updatedList, setUpdatedList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  //task data state
   const [item, setItem] = useState("");
-  // const [noSearchResult, setNoSearchResult] = useState(false);
+  const [name, setName] = useState("");
+  const [todo, setTodo] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [reminder, setReminder] = useState("");
+  const [option, setOption] = useState("");
+  const [id, setId] = useState("");
+
+  useEffect(() => {
+    addTodo(todo);
+    setName("");
+    setDescription("");
+    setDueDate("");
+    setReminder("");
+    setOption("");
+    setId("");
+  }, [todo]);
 
   useEffect(() => {
     setUpdatedList([...todoList]);
+    selectedTab(tab);
   }, [todoList]);
 
   useEffect(() => {
@@ -30,44 +45,119 @@ function App() {
   };
 
   function searchTodo() {
-    const filteredTodos = todoList.filter((todo) =>
-      todo.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const updatedTodoList = [...todoList];
+    const filterTodoSearchTearm = updatedTodoList.filter((item) =>
+      item.name.includes(searchTerm)
     );
-    // if (!filteredTodos.length) {
-    //   setNoSearchResult(true);
-    // } else {
-      setUpdatedList(filteredTodos);
-    // }
+
+    if (tab === "Completed") {
+      const updated = filterTodoSearchTearm.filter(
+        (item) => item.status === true
+      );
+      setUpdatedList(updated);
+    } else if (tab === "Pending") {
+      const updated = filterTodoSearchTearm.filter(
+        (item) => item.status === false
+      );
+      setUpdatedList(updated);
+    } else {
+      setUpdatedList([...filterTodoSearchTearm]);
+    }
   }
 
   function handleAddClick() {
     document.getElementById("createTodoModal").style.display = "block";
   }
 
-  function addTodo(todo) {
-    if (!todo.name) return;
-    const id = generateUUID();
-    setTodoList([...todoList, { ...todo, id, status: false }]);
-    setSearchTerm("");
+  function handleCancelClick() {
+    document.getElementById("createTodoModal").style.display = "none";
+    setName("");
+    setDescription("");
+    setDueDate("");
+    setReminder("");
   }
 
-  function selectedTab(text) {
-    const updatedTodoList = [...todoList];
-    setTab(text);
-    if (text === "Completed") {
-      const updated = updatedTodoList.filter((item) => item.status === true);
-      setUpdatedList(updated);
-    } else if (text === "Pending") {
-      const updated = updatedTodoList.filter((item) => item.status === false);
-      setUpdatedList(updated);
+  function handleName(todoname) {
+    setName(todoname);
+  }
+
+  function handleDescription(todoDiscription) {
+    setDescription(todoDiscription);
+  }
+
+  function handleReminder(todoReminder) {
+    setReminder(todoReminder);
+  }
+
+  function handleDueDate(todoDuedate) {
+    setDueDate(todoDuedate);
+  }
+
+  function addTodo(todo) {
+    if (!todo.name) return;
+    let editTodo = todoList.findIndex((item) => todo.id === item.id);
+    console.log(editTodo, "index of todo");
+    if (editTodo > -1) {
+      const updatedList = [...todoList];
+      updatedList.splice(editTodo, 1, todo);
+      setTodoList(updatedList);
     } else {
-      setUpdatedList([...todoList]);
+      setTodoList([...todoList, todo]);
     }
     setSearchTerm("");
   }
 
+  function handleEditTodo(task, option) {
+    console.log(task, "comming todo");
+    setId(task.id);
+    setName(task.name);
+    setDescription(task.description);
+    setDueDate(task.dueDate);
+    setReminder(task.reminder);
+    setOption(option);
+    console.log(name);
+  }
+
+  function handleAddTodoClick(option, task) {
+    console.log(task, "comming todo add button");
+    if (option === "Edit") {
+      setTodo({ ...task, name, description, dueDate, reminder, id });
+    } else {
+      const todoid = generateUUID();
+      setTodo({
+        name,
+        description,
+        dueDate,
+        reminder,
+        id: todoid,
+        status: false,
+      });
+    }
+    if (name) document.getElementById("createTodoModal").style.display = "none";
+  }
+
+  function selectedTab(text) {
+    const updatedTodoList = [...todoList];
+    const filterTodoSearchTearm = updatedTodoList.filter((item) =>
+      item.name.includes(searchTerm)
+    );
+    setTab(text);
+    if (text === "Completed") {
+      const updated = filterTodoSearchTearm.filter(
+        (item) => item.status === true
+      );
+      setUpdatedList(updated);
+    } else if (text === "Pending") {
+      const updated = filterTodoSearchTearm.filter(
+        (item) => item.status === false
+      );
+      setUpdatedList(updated);
+    } else {
+      setUpdatedList([...filterTodoSearchTearm]);
+    }
+  }
+
   function handleDeleteClick(task) {
-    // console.log(task)
     const deletedTodo = todoList.findIndex((item) => task.id === item.id);
     const updatedList = [...todoList];
     updatedList.splice(deletedTodo, 1);
@@ -76,10 +166,6 @@ function App() {
 
   function handleDeleteTodo(task) {
     setItem({ ...task });
-  }
-
-  function handleEditTodo(task, name) {
-    console.log(name);
   }
 
   function handlMarkInCompleteTodo(task) {
@@ -117,7 +203,20 @@ function App() {
       </div>
 
       <div id="createTodoModal" className="hidden">
-        <TodoCreateModal addTodoItem={addTodo} />
+        <TodoCreateModal
+          handleName={handleName}
+          handleCancelClick={handleCancelClick}
+          handleAddTodoClick={handleAddTodoClick}
+          handleDescription={handleDescription}
+          handleDueDate={handleDueDate}
+          handelReminder={handleReminder}
+          name={name}
+          description={description}
+          reminder={reminder}
+          dueDate={dueDate}
+          option={option}
+          todo={todo}
+        />
       </div>
 
       <div id="deleteTodoModal" className="hidden">

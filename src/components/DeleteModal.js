@@ -1,14 +1,11 @@
-import { useContext, useState } from "react";
-// import {todoContext} from "../App.js";
-
-export default function DeleteModal({ handleDeleteClick ,task }) {
+export default function DeleteModal({ handleDeleteClick, task }) {
   function handleCancelDeleteClick() {
-    console.log(task.name)
+    console.log(task.name);
     document.getElementById("deleteTodoModal").style.display = "none";
   }
   function handleConfirmlDeleteClick() {
     document.getElementById("deleteTodoModal").style.display = "none";
-    console.log(task.name)
+    console.log(task.name);
     handleDeleteClick(task);
   }
   return (
